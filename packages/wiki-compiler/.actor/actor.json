@@ -1,0 +1,50 @@
+{
+    "actorSpecification": 1,
+    "name": "42rows-wiki-compiler-v2",
+    "title": "42 Wiki Compiler v2 (Persistent Knowledge for AI Agents)",
+    "description": "Compile any markdown wiki into an AI-agent-ready bundle: auto-derives a thesis, pre-computes answer chunks via LLM teacher, embeds with E5, ships compiled_wiki.zip + MCP manifest for Claude Desktop, Cursor, Cline. 30x faster than LLM-as-retriever.",
+    "readme": "../README.md",
+    "version": "0.2",
+    "buildTag": "latest",
+    "meta": {
+        "author": "42rows S.r.l. - Mario Brosco",
+        "email": "info@42rows.com",
+        "homepage": "https://github.com/42ROWS/wiki-embedded"
+    },
+    "input": "./input_schema.json",
+    "output": "./output_schema.json",
+    "dockerfile": "./Dockerfile",
+    "minMemoryMbytes": 2048,
+    "maxMemoryMbytes": 8192,
+    "storages": {
+        "dataset": {
+            "actorSpecification": 1,
+            "views": {
+                "overview": {
+                    "title": "Compiled Wiki — Pages & Chunks",
+                    "transformation": {
+                        "fields": [
+                            "kind",
+                            "slug",
+                            "title",
+                            "archetype_id",
+                            "quality_score",
+                            "cites_count"
+                        ]
+                    },
+                    "display": {
+                        "component": "table",
+                        "properties": {
+                            "kind": {"label": "Kind", "format": "text"},
+                            "slug": {"label": "Slug", "format": "text"},
+                            "title": {"label": "Title", "format": "text"},
+                            "archetype_id": {"label": "Archetype", "format": "text"},
+                            "quality_score": {"label": "Quality", "format": "number"},
+                            "cites_count": {"label": "Cites", "format": "number"}
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

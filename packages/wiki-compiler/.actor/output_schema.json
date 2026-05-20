@@ -1,0 +1,132 @@
+{
+    "actorOutputSchemaVersion": 1,
+    "type": "object",
+    "properties": {
+        "status": {
+            "type": "string",
+            "title": "Status",
+            "description": "Compile result: succeeded, partial, or failed",
+            "template": "{{status}}"
+        },
+        "wiki_source_kind": {
+            "type": "string",
+            "title": "Source Type",
+            "description": "github | zipUrl | uploadedFiles",
+            "template": "{{wiki_source_kind}}"
+        },
+        "pages_count": {
+            "type": "string",
+            "title": "Pages",
+            "description": "Number of wiki pages parsed",
+            "template": "{{pages_count}}"
+        },
+        "chunks_count": {
+            "type": "string",
+            "title": "Chunks",
+            "description": "Number of pre-computed answer chunks generated",
+            "template": "{{chunks_count}}"
+        },
+        "crossref_edges": {
+            "type": "string",
+            "title": "Wikilinks",
+            "description": "Number of [[slug]] crossref edges resolved",
+            "template": "{{crossref_edges}}"
+        },
+        "thesis_hash": {
+            "type": "string",
+            "title": "Thesis Hash",
+            "description": "SHA256 of the derived thesis (changes invalidate chunks)",
+            "template": "{{thesis_hash}}"
+        },
+        "thesis_summary": {
+            "type": "string",
+            "title": "Thesis Summary",
+            "description": "One-line summary of the derived thesis",
+            "template": "{{thesis_summary}}"
+        },
+        "compiled_wiki_url": {
+            "type": "string",
+            "title": "Compiled Wiki (.zip)",
+            "description": "Download URL of the compiled wiki bundle (pages + chunks + embeddings + manifest)",
+            "template": "{{compiled_wiki_url}}"
+        },
+        "mcp_manifest_url": {
+            "type": "string",
+            "title": "MCP Manifest (.json)",
+            "description": "Plug-and-play config snippet for Claude Desktop / Cursor / Cline",
+            "template": "{{mcp_manifest_url}}"
+        },
+        "embedding_model": {
+            "type": "string",
+            "title": "Embedding Model",
+            "description": "Sentence-transformers model used for embeddings",
+            "template": "{{embedding_model}}"
+        },
+        "embedding_dims": {
+            "type": "string",
+            "title": "Embedding Dims",
+            "description": "Embedding vector dimensions",
+            "template": "{{embedding_dims}}"
+        },
+        "llm_calls_count": {
+            "type": "string",
+            "title": "LLM Calls",
+            "description": "Number of LLM calls (thesis + chunks)",
+            "template": "{{llm_calls_count}}"
+        },
+        "llm_tokens_input": {
+            "type": "string",
+            "title": "Tokens In",
+            "description": "Total input tokens consumed across all LLM calls",
+            "template": "{{llm_tokens_input}}"
+        },
+        "llm_tokens_output": {
+            "type": "string",
+            "title": "Tokens Out",
+            "description": "Total output tokens consumed across all LLM calls",
+            "template": "{{llm_tokens_output}}"
+        },
+        "rag_dedup_skipped": {
+            "type": "string",
+            "title": "Dedup Skipped",
+            "description": "Number of chunks skipped due to similarity > 0.92 with existing ones",
+            "template": "{{rag_dedup_skipped}}"
+        },
+        "quality_score_avg": {
+            "type": "string",
+            "title": "Avg Quality",
+            "description": "Average quality score of generated chunks (0-100)",
+            "template": "{{quality_score_avg}}"
+        },
+        "total_cost_usd": {
+            "type": "string",
+            "title": "Cost (USD)",
+            "description": "Total LLM cost (BYOK billed by provider; Hosted reflects flat rate)",
+            "template": "{{total_cost_usd}}"
+        },
+        "execution_time_ms": {
+            "type": "string",
+            "title": "Time (ms)",
+            "description": "Total compile time in milliseconds",
+            "template": "{{execution_time_ms}}"
+        },
+        "warnings": {
+            "type": "string",
+            "title": "Warnings",
+            "description": "Non-fatal warnings during compile",
+            "template": "{{warnings}}"
+        },
+        "errors": {
+            "type": "string",
+            "title": "Errors",
+            "description": "Error details if compile failed",
+            "template": "{{errors}}"
+        },
+        "timestamp": {
+            "type": "string",
+            "title": "Timestamp",
+            "description": "ISO 8601 timestamp of compile completion",
+            "template": "{{timestamp}}"
+        }
+    }
+}

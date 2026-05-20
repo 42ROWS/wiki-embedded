@@ -1,0 +1,10 @@
+{
+  "prompt": "Group by 'Country' and calculate the sum of 'Confirmed' cases. Sort by total confirmed descending. Show only the top 20 countries.",
+  "datasetUrls": [
+    "https://raw.githubusercontent.com/datasets/covid-19/main/data/countries-aggregated.csv"
+  ],
+  "outputFormat": "csv",
+  "llmProvider": "groq",
+  "includeGeneratedCode": true,
+  "maxRetries": 3
+}

@@ -1,0 +1,92 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "wiki-embedded-mcp"
+version = "0.2.0"
+description = "MCP server for persistent knowledge wikis with pre-computed answer chunks. Loads from a local dir or a compiled_wiki.zip produced by the 42rows-wiki-compiler actor. Karpathy-style wiki + materialized views for AI agents."
+authors = [{name = "Mario Brosco", email = "info@42rows.com"}]
+maintainers = [{name = "42rows S.r.l.", email = "info@42rows.com"}]
+license = "MIT"
+readme = "README.md"
+requires-python = ">=3.10"
+keywords = ["mcp", "rag", "wiki", "knowledge", "embeddings", "karpathy", "llm-tools"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+    "mcp>=1.0.0",
+    "python-frontmatter>=1.0.0",
+    "numpy>=1.24.0",
+    "httpx>=0.27.0",
+]
+
+[project.optional-dependencies]
+# Local sentence-transformers fallback for offline runtime embedding.
+# Not required if you use a compiled_wiki.zip with `pinecone:` model + PINECONE_API_KEY.
+local = ["sentence-transformers>=3.0.0"]
+# Cloud Pinecone Inference for both compile-time and runtime embedding.
+cloud = ["pinecone>=5.0.0"]
+# Both backends available at runtime (recommended).
+all = ["sentence-transformers>=3.0.0", "pinecone>=5.0.0"]
+dev = ["pytest", "pytest-asyncio", "ruff"]
+faiss = ["faiss-cpu>=1.7.4"]
+
+[project.scripts]
+wiki-embedded-mcp = "wiki_embedded_mcp.server:main"
+
+[project.urls]
+Homepage = "https://github.com/42ROWS/wiki-embedded"
+Documentation = "https://github.com/42ROWS/wiki-embedded/blob/main/packages/wiki-embedded-mcp/README.md"
+Repository = "https://github.com/42ROWS/wiki-embedded"
+Issues = "https://github.com/42ROWS/wiki-embedded/issues"
+Hosted = "https://42rows.com/wiki"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/wiki_embedded_mcp"]
+
+# ──────────────────────────────────────────────────────────────────────────────
+# uv workspace — the repo ships three Python packages from a single tree:
+#   • wiki-embedded-mcp  (this top-level project, MCP server runtime)
+#   • wiki-compiler      (packages/wiki-compiler, compile-time pipeline)
+#   • polars-runner      (packages/polars-runner, NL→Polars engine)
+#
+# Run from repo root:
+#   uv sync --all-packages      # install everything in one venv
+#   uv run --package wiki-embedded-mcp wiki-embedded-mcp --help
+#   uv run --package wiki-compiler   wiki-compile  --help
+#   uv run --package polars-runner   polars-runner --help
+#
+# Build all wheels:
+#   uv build --all-packages
+# ──────────────────────────────────────────────────────────────────────────────
+
+[tool.uv.workspace]
+members = ["packages/*"]
+
+[tool.uv.sources]
+wiki-compiler = { workspace = true }
+polars-runner = { workspace = true }
+
+[tool.hatch.build.targets.wheel.force-include]
+"src/wiki_embedded_mcp/py.typed" = "wiki_embedded_mcp/py.typed"
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP", "SIM"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+addopts = "-v --tb=short"

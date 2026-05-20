@@ -1,0 +1,166 @@
+{
+  "title": "AI Data Transformer",
+  "description": "Transform datasets using natural language prompts powered by AI.\n\n**3 pricing tiers:** Basic ($0.0015), Premium ($0.20), or BYOK ($0.05 + your API costs).\n\n**Quick start:** Paste a URL to your CSV and type something like 'group by category and sum values'.\n\n📚 [Documentation](https://github.com/lorenzode/ai-data-transformer)",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "datasetUrls": {
+      "title": "📁 Dataset URLs",
+      "type": "array",
+      "description": "URLs to your data files (CSV, JSON, Excel, Parquet). Add multiple URLs to merge files together.",
+      "editor": "stringList",
+      "prefill": ["https://raw.githubusercontent.com/datasets/covid-19/main/data/countries-aggregated.csv"],
+      "items": {
+        "type": "string"
+      },
+      "sectionCaption": "📊 Data Input",
+      "sectionDescription": "Provide one or more data sources. Multiple files will be automatically merged."
+    },
+    "uploadedFiles": {
+      "title": "📤 Upload Files",
+      "type": "array",
+      "description": "Or upload files directly (CSV, JSON, Excel, Parquet). Max 50MB per file.",
+      "editor": "fileupload"
+    },
+    "apifyDatasetId": {
+      "title": "📊 Apify Dataset ID",
+      "type": "string",
+      "description": "Or use an existing Apify dataset from another Actor run",
+      "editor": "resourcePicker",
+      "resourceType": "dataset",
+      "resourcePermissions": ["READ"]
+    },
+    "datasetId": {
+      "title": "📊 Dataset ID (API/Integration)",
+      "type": "string",
+      "description": "Apify Dataset ID to transform. Simple alternative for API calls and integrations. Example: 'abc123def456'",
+      "editor": "textfield"
+    },
+    "resource": {
+      "title": "🔗 Webhook Payload",
+      "type": "object",
+      "description": "Auto-populated when triggered via webhook/integration from another Actor. Contains defaultDatasetId from the previous run. Leave empty - filled automatically by Apify.",
+      "editor": "json"
+    },
+    "inputData": {
+      "title": "📋 Direct JSON Data",
+      "type": "object",
+      "description": "Pass data directly as JSON (no file upload needed).\n\n**Single table:** {\"data\": [{\"name\": \"A\", \"price\": 100}]}\n\n**Multi-table JOIN:** {\"contacts\": [{...}], \"companies\": [{...}]}\n\nMax ~9MB. Response includes full output_data if < 10MB.",
+      "editor": "json"
+    },
+    "prompt": {
+      "title": "💬 Transformation Prompt",
+      "type": "string",
+      "description": "Describe your transformation in plain English. Be specific about column names, aggregations, filters, and sorting.",
+      "editor": "textarea",
+      "prefill": "Group by 'Country' and calculate the sum of 'Confirmed' cases. Sort by total confirmed descending. Show only the top 20 countries.",
+      "sectionCaption": "🎯 What do you want to do?",
+      "sectionDescription": "Write your transformation request as if explaining to a colleague. The AI generates and executes the code for you."
+    },
+    "useAdvancedFeatures": {
+      "title": "💎 Use Advanced Features",
+      "type": "boolean",
+      "description": "Enable Premium tier: Gemini 2.5 Pro + Google Search grounding + RAG memory. Works with hosted ($0.20) or BYOK Google API (same features, you pay Google directly). Basic tier uses Flash-Lite ($0.0015 hosted).",
+      "default": false,
+      "sectionCaption": "⚡ Pricing Tier",
+      "sectionDescription": "**Basic (unchecked):** Flash-Lite hosted at $0.0015/event. Fast for simple tasks. **Premium (checked):** Gemini Pro + grounding + RAG at $0.20/event (or $0.05 + your Google API if you provide key below)."
+    },
+    "llmProvider": {
+      "title": "🤖 AI Provider (BYOK)",
+      "type": "string",
+      "description": "Select AI provider for BYOK (Bring Your Own Key). Leave API key blank to use hosted tier instead. BYOK = $0.05 Apify fee + your API costs.",
+      "editor": "select",
+      "default": "google",
+      "enum": ["groq", "anthropic", "openai", "google"],
+      "enumTitles": [
+        "⚡ Groq Llama 3.3 70B (FREE & Fast)",
+        "🧠 Claude Sonnet 4 (Best for code)",
+        "🌐 GPT-4o (Reliable)",
+        "💎 Google Gemini (Can use Advanced Features)"
+      ],
+      "sectionCaption": "🔑 BYOK - Bring Your Own Key (Optional)",
+      "sectionDescription": "**No API key?** Leave blank for hosted Basic ($0.0015) or Premium ($0.20). **Have API credits?** BYOK = $0.05 Apify + your API costs. Google BYOK can use Advanced Features (grounding) if checkbox above is checked."
+    },
+    "groqApiKey": {
+      "title": "🔑 Groq API Key (FREE)",
+      "type": "string",
+      "description": "Get your FREE API key at console.groq.com (takes 30 seconds). BYOK = $0.05 Apify fee + free Groq API.",
+      "editor": "textfield",
+      "isSecret": true
+    },
+    "anthropicApiKey": {
+      "title": "🔑 Anthropic API Key",
+      "type": "string",
+      "description": "Required if using Claude. Get your key at console.anthropic.com. BYOK = $0.05 Apify fee + Claude API costs.",
+      "editor": "textfield",
+      "isSecret": true
+    },
+    "openaiApiKey": {
+      "title": "🔑 OpenAI API Key",
+      "type": "string",
+      "description": "Required if using GPT-4o. Get your key at platform.openai.com. BYOK = $0.05 Apify fee + OpenAI API costs.",
+      "editor": "textfield",
+      "isSecret": true
+    },
+    "googleApiKey": {
+      "title": "🔑 Google AI API Key",
+      "type": "string",
+      "description": "Get your key at aistudio.google.com. BYOK = $0.05 Apify fee + Google API costs (~$1.25/1M tokens). Enable 'Advanced Features' above for grounding (~$35/1K searches).",
+      "editor": "textfield",
+      "isSecret": true
+    },
+    "outputFormat": {
+      "title": "📄 Output Format",
+      "type": "string",
+      "description": "Choose the format for your transformed data",
+      "editor": "select",
+      "default": "csv",
+      "enum": ["csv", "json", "parquet", "xlsx"],
+      "enumTitles": [
+        "CSV (spreadsheet-friendly)",
+        "JSON (API-friendly)",
+        "Parquet (ML/big data, compressed)",
+        "Excel (.xlsx)"
+      ],
+      "sectionCaption": "⚙️ Output Settings"
+    },
+    "includeGeneratedCode": {
+      "title": "📝 Include Generated Code",
+      "type": "boolean",
+      "description": "Include the generated Python/Polars code in output for reuse in your own projects",
+      "default": true
+    },
+    "fallbackProvider": {
+      "title": "🔄 Fallback AI Model",
+      "type": "string",
+      "description": "If primary model fails, try this one (requires corresponding API key)",
+      "editor": "select",
+      "enum": ["", "groq", "anthropic", "openai", "google"],
+      "enumTitles": [
+        "None",
+        "⚡ Groq Llama 3.3 70B",
+        "🧠 Claude Sonnet 4",
+        "🌐 GPT-4o",
+        "💎 Gemini 2.0 Flash"
+      ],
+      "sectionCaption": "🛠️ Advanced Options",
+      "sectionDescription": "Fine-tune the Actor behavior"
+    },
+    "maxRetries": {
+      "title": "🔄 Max Retries",
+      "type": "integer",
+      "description": "Number of attempts if code generation fails",
+      "default": 3,
+      "minimum": 1,
+      "maximum": 5,
+      "editor": "number"
+    },
+    "enableStreaming": {
+      "title": "🌊 Enable Streaming",
+      "type": "boolean",
+      "description": "Process large files in chunks. Auto-enabled for files > 100MB.",
+      "default": false
+    }
+  },
+  "required": ["prompt"]
+}

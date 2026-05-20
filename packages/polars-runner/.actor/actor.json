@@ -1,0 +1,48 @@
+{
+  "actorSpecification": 1,
+  "name": "polars-ai-data-transformer",
+  "title": "AI Data Transformer",
+  "description": "Transform datasets using natural language. Bring your FREE Groq API key, upload CSV/Excel/JSON/Parquet, describe your transformation, get results + reusable Python code.",
+  "version": "0.2",
+  "buildTag": "latest",
+  "meta": {
+    "author": "42rows S.r.l. - Mario Brosco",
+    "email": "info@42rows.com",
+    "homepage": "https://github.com/42ROWS/wiki-embedded"
+  },
+  "input": "./input_schema.json",
+  "output": "./output_schema.json",
+  "dockerfile": "./Dockerfile",
+  "readme": "../README.md",
+  "storages": {
+    "dataset": {
+      "actorSpecification": 1,
+      "views": {
+        "overview": {
+          "title": "Transformation Results",
+          "transformation": {
+            "fields": [
+              "status",
+              "input_rows_total",
+              "output_rows",
+              "execution_time_ms",
+              "output_file"
+            ]
+          },
+          "display": {
+            "component": "table",
+            "properties": {
+              "status": {"label": "Status", "format": "text"},
+              "input_rows_total": {"label": "Input Rows", "format": "number"},
+              "output_rows": {"label": "Output Rows", "format": "number"},
+              "execution_time_ms": {"label": "Time (ms)", "format": "number"},
+              "output_file": {"label": "Output File", "format": "text"}
+            }
+          }
+        }
+      }
+    }
+  },
+  "minMemoryMbytes": 512,
+  "maxMemoryMbytes": 4096
+}

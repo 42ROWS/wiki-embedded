@@ -1,0 +1,66 @@
+# ── Python ─────────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+*.egg
+.eggs/
+*.whl
+
+# ── Virtual environments ───────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+
+# ── Tooling caches ─────────────────────────────────────────────────────────────
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+coverage.xml
+htmlcov/
+.tox/
+
+# ── uv (workspace lockfile IS committed; cache is not) ─────────────────────────
+.uv-cache/
+
+# ── Editors ────────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# ── Local secrets / env ────────────────────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+# ── Apify local storage (per-actor) ────────────────────────────────────────────
+storage/
+crawlee_storage/
+apify_storage/
+
+# ── HuggingFace cache (for local E5 testing) ───────────────────────────────────
+.cache/huggingface/
+
+# ── Build artifacts of the workspace ───────────────────────────────────────────
+**/output/
+**/*.compiled_wiki.zip
+
+# ── Internal benchmarks (reference private client data — NOT published) ─────────
+benchmarks/
+
+# ── Claude Code settings (local-only) ──────────────────────────────────────────
+.claude/settings.local.json
+
+# ── Legacy raw copies (reference only, not published) ──────────────────────────
+_legacy/

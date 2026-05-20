@@ -1,0 +1,96 @@
+{
+  "actorOutputSchemaVersion": 1,
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "title": "Status",
+      "description": "Transformation status: success, partial_success, or failed",
+      "template": "{{status}}"
+    },
+    "input_sources_count": {
+      "type": "string",
+      "title": "Input Sources",
+      "description": "Number of data sources loaded",
+      "template": "{{input_sources_count}}"
+    },
+    "input_rows_total": {
+      "type": "string",
+      "title": "Input Rows",
+      "description": "Total number of rows in input data",
+      "template": "{{input_rows_total}}"
+    },
+    "input_columns": {
+      "type": "string",
+      "title": "Input Columns",
+      "description": "List of column names in input data",
+      "template": "{{input_columns}}"
+    },
+    "output_rows": {
+      "type": "string",
+      "title": "Output Rows",
+      "description": "Number of rows in transformed output",
+      "template": "{{output_rows}}"
+    },
+    "output_columns": {
+      "type": "string",
+      "title": "Output Columns",
+      "description": "List of column names in output data",
+      "template": "{{output_columns}}"
+    },
+    "output_file": {
+      "type": "string",
+      "title": "Output File",
+      "description": "Filename of exported data in Key-Value Store",
+      "template": "{{output_file}}"
+    },
+    "output_preview": {
+      "type": "string",
+      "title": "Output Preview",
+      "description": "First 10 rows of transformed data (JSON array)",
+      "template": "{{output_preview}}"
+    },
+    "output_data": {
+      "type": "string",
+      "title": "Output Data",
+      "description": "Full transformed data as JSON array (only if < 10MB). Use this for API integrations.",
+      "template": "{{output_data}}"
+    },
+    "execution_time_ms": {
+      "type": "string",
+      "title": "Execution Time (ms)",
+      "description": "Total execution time in milliseconds",
+      "template": "{{execution_time_ms}}"
+    },
+    "generation_info": {
+      "type": "string",
+      "title": "Generation Info",
+      "description": "LLM code generation details (provider, tokens, time, attempts)",
+      "template": "{{generation_info}}"
+    },
+    "generated_code": {
+      "type": "string",
+      "title": "Generated Code",
+      "description": "Python/Polars code generated for the transformation. Reusable in your own projects.",
+      "template": "{{generated_code}}"
+    },
+    "warnings": {
+      "type": "string",
+      "title": "Warnings",
+      "description": "Non-fatal warnings during processing",
+      "template": "{{warnings}}"
+    },
+    "errors": {
+      "type": "string",
+      "title": "Errors",
+      "description": "Error details if transformation failed",
+      "template": "{{errors}}"
+    },
+    "timestamp": {
+      "type": "string",
+      "title": "Timestamp",
+      "description": "ISO 8601 timestamp of transformation completion",
+      "template": "{{timestamp}}"
+    }
+  }
+}

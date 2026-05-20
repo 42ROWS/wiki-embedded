@@ -1,0 +1,183 @@
+{
+    "title": "42 Wiki Compiler",
+    "description": "Compile any markdown wiki into an AI-agent-ready knowledge base.\n\n**Quick start:** point at a public GitHub repo with .md files (or upload a zip), describe in 1-2 sentences what the wiki is for, get back a compiled wiki + MCP config snippet to paste into Claude Desktop / Cursor / Cline.\n\n**3 pricing tiers:** BYOK Google ($0 + your Gemini costs), BYOK Anthropic ($0 + your Claude costs), or Hosted ($5/compile, uses our Gemini quota).\n\n📚 [Documentation](https://github.com/42ROWS/wiki-embedded)",
+    "type": "object",
+    "schemaVersion": 1,
+    "properties": {
+        "wikiSource": {
+            "title": "📁 Wiki Source Type",
+            "type": "string",
+            "description": "Where to fetch the markdown files from.",
+            "editor": "select",
+            "default": "github",
+            "enum": ["github", "zipUrl", "uploadedFiles"],
+            "enumTitles": [
+                "🐙 Public GitHub repository (recommended)",
+                "🔗 Public ZIP URL",
+                "📤 Upload files directly"
+            ],
+            "sectionCaption": "📚 Wiki Input",
+            "sectionDescription": "Provide the markdown wiki to compile. Files should be `.md` with optional YAML frontmatter. Wikilinks `[[slug]]` are auto-extracted as crossrefs."
+        },
+        "githubRepo": {
+            "title": "🐙 GitHub Repository",
+            "type": "string",
+            "description": "Format: `owner/repo` or `owner/repo/path/to/wiki/dir` (e.g. `karpathy/llm.c` or `mario/notes/wiki`). Public repos only.",
+            "editor": "textfield",
+            "prefill": "karpathy/llm.c"
+        },
+        "githubBranch": {
+            "title": "🌿 Branch",
+            "type": "string",
+            "description": "Branch to fetch from. Defaults to the repo's default branch.",
+            "editor": "textfield",
+            "default": "main"
+        },
+        "zipUrl": {
+            "title": "🔗 ZIP URL",
+            "type": "string",
+            "description": "Public URL to a `.zip` containing the wiki markdown files.",
+            "editor": "textfield"
+        },
+        "uploadedFiles": {
+            "title": "📤 Upload Markdown Files",
+            "type": "array",
+            "description": "Upload `.md` files directly. Wikilinks `[[slug]]` between uploaded files are preserved.",
+            "editor": "fileupload"
+        },
+        "thesisIntent": {
+            "title": "🎯 Thesis Intent (1-2 sentences)",
+            "type": "string",
+            "description": "Describe the purpose of the wiki and who will query it. The compiler uses this to derive a structured thesis (target audience, primary use case, answer style, key concepts, excluded topics). Example: 'A B2B sales rep doing account-based marketing for Italian PMI manufacturers, looking for prospects with high intent signals.'",
+            "editor": "textarea",
+            "prefill": "An AI agent answering practical questions about this knowledge base for its intended readers. Answers should be concise and cite the relevant wiki pages.",
+            "sectionCaption": "🧠 Thesis (the lens through which the wiki is compiled)"
+        },
+        "answerStyle": {
+            "title": "✍️ Preferred Answer Style",
+            "type": "string",
+            "description": "Hint for the chunk generation pass. Affects tone, depth, and citation style of the pre-computed chunks.",
+            "editor": "select",
+            "default": "concise_actionable",
+            "enum": ["concise_actionable", "comprehensive_cited", "tactical_recipe", "exploratory"],
+            "enumTitles": [
+                "Concise + actionable (default — best for sales/ops)",
+                "Comprehensive + heavily cited (best for research)",
+                "Tactical recipe / how-to (best for engineering wikis)",
+                "Exploratory / open-ended (best for ideation)"
+            ]
+        },
+        "chunkArchetypes": {
+            "title": "🧩 Chunk Archetypes",
+            "type": "array",
+            "description": "Which categories of pre-computed answer chunks to generate. ~4 chunks per archetype, ~$0.01 each via Gemini Flash. Total cost scales with the number selected.",
+            "editor": "select",
+            "default": ["ranking_top_n", "comparative", "explanatory", "tactical_recipe"],
+            "items": {
+                "type": "string",
+                "enum": [
+                    "ranking_top_n",
+                    "comparative",
+                    "predictive",
+                    "explanatory",
+                    "tactical_recipe"
+                ]
+            },
+            "uniqueItems": true,
+            "sectionCaption": "🧠 Chunk generation"
+        },
+        "chunksPerArchetype": {
+            "title": "🔢 Chunks per Archetype",
+            "type": "integer",
+            "description": "Number of pre-computed answer chunks per archetype. More = better coverage but higher cost. Default 4 (good balance).",
+            "default": 4,
+            "minimum": 1,
+            "maximum": 10,
+            "editor": "number"
+        },
+        "llmProvider": {
+            "title": "🤖 LLM Provider",
+            "type": "string",
+            "description": "Which LLM to use for thesis derivation + chunk generation. BYOK = leave the matching key below. Hosted = leave keys empty (uses our Gemini quota, $5/compile).",
+            "editor": "select",
+            "default": "google",
+            "enum": ["google", "anthropic", "hosted"],
+            "enumTitles": [
+                "💎 Google Gemini (BYOK — recommended, fast + cheap)",
+                "🧠 Anthropic Claude (BYOK — best quality on thesis)",
+                "💼 Hosted (we provide the LLM — $5/compile flat)"
+            ],
+            "sectionCaption": "🔑 LLM (BYOK or Hosted)",
+            "sectionDescription": "BYOK is free Apify-side, you pay the LLM provider directly (~$0.05-0.30 per wiki). Hosted is $5 flat per compile."
+        },
+        "googleApiKey": {
+            "title": "🔑 Google AI API Key (BYOK)",
+            "type": "string",
+            "description": "Get yours at aistudio.google.com. Used for thesis (Gemini 2.5 Pro) + chunks (Gemini 2.5 Flash). Typical cost: $0.05-0.20 per wiki.",
+            "editor": "textfield",
+            "isSecret": true
+        },
+        "anthropicApiKey": {
+            "title": "🔑 Anthropic API Key (BYOK)",
+            "type": "string",
+            "description": "Get yours at console.anthropic.com. Used for thesis (Claude Sonnet) + chunks (Claude Haiku). Typical cost: $0.20-0.60 per wiki.",
+            "editor": "textfield",
+            "isSecret": true
+        },
+        "embeddingModel": {
+            "title": "🔡 Embedding Model",
+            "type": "string",
+            "description": "Pinecone Inference (cloud) is the default — 5M tokens/month free, ~30s for 137 pages. Local options use the actor's CPU (slower, no API key needed).",
+            "editor": "select",
+            "default": "pinecone:multilingual-e5-large",
+            "enum": [
+                "pinecone:multilingual-e5-large",
+                "pinecone:llama-text-embed-v2",
+                "intfloat/multilingual-e5-base",
+                "intfloat/multilingual-e5-large"
+            ],
+            "enumTitles": [
+                "☁️ Pinecone E5 multilingual-large (default, 1024d, fast)",
+                "☁️ Pinecone llama-text-embed-v2 (1024d, top MTEB quality)",
+                "💻 Local E5 multilingual-base (768d, ~500MB, no API key)",
+                "💻 Local E5 multilingual-large (1024d, ~2GB, no API key)"
+            ],
+            "sectionCaption": "⚙️ Advanced Options",
+            "sectionDescription": "Cloud options require PINECONE_API_KEY env var on the actor. Local options run on the actor's CPU."
+        },
+        "tenantId": {
+            "title": "🏢 Tenant ID (Pinecone namespace)",
+            "type": "string",
+            "description": "If set, the compiled vectors are synced to a Pinecone index (= the `collection`) under a namespace = this tenant id (e.g. the company id). The agent then retrieves from `(collection, tenantId)`. Leave empty to only produce the bundle (no Pinecone write). Requires PINECONE_API_KEY on the actor.",
+            "editor": "textfield",
+            "sectionCaption": "🗂️ Retrieval store (Pinecone, optional)",
+            "sectionDescription": "Write the vectors to a per-tenant Pinecone namespace so an agent can query them at runtime. collection → index, tenantId → namespace."
+        },
+        "collection": {
+            "title": "🗂️ Collection (Pinecone index)",
+            "type": "string",
+            "description": "Which corpus this wiki belongs to (e.g. `company-wiki`, `marketing-skills`). Maps to a Pinecone index. Few collections (corpus types), many tenants (namespaces). Default: company-wiki.",
+            "editor": "textfield",
+            "default": "company-wiki"
+        },
+        "priorBundleUrl": {
+            "title": "♻️ Prior bundle URL (incremental update)",
+            "type": "string",
+            "description": "Public URL of a previously compiled `compiled_wiki.zip` (e.g. the `compiled_wiki_url` from a prior run). When provided, the compiler diffs the new source against it and re-embeds / re-generates only what changed — much faster and cheaper. Leave empty for a full compile. Falls back to a full rebuild automatically if the embedding model changed or too much of the wiki changed.",
+            "editor": "textfield"
+        },
+        "ragDedup": {
+            "title": "♻️ Skip near-duplicate chunks",
+            "type": "boolean",
+            "description": "Use Pinecone-backed RAG dedup: chunks with cosine similarity > 0.92 to existing ones are skipped. Saves LLM cost on refresh runs.",
+            "default": true
+        },
+        "outputMcpManifest": {
+            "title": "📦 Emit MCP Manifest",
+            "type": "boolean",
+            "description": "Generate a plug-and-play MCP server config snippet (for Claude Desktop / Cursor / Cline) alongside the compiled wiki.",
+            "default": true
+        }
+    },
+    "required": ["thesisIntent"]
+}

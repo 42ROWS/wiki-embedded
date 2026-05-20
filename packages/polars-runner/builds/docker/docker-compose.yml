@@ -1,0 +1,84 @@
+# polars-runner — local Docker compose (dev / test / apify-sim profiles)
+#
+# Build context for each service points at packages/polars-runner/ (two levels up).
+# Run from packages/polars-runner/ with:
+#   docker compose -f builds/docker/docker-compose.yml up dev
+#   docker compose -f builds/docker/docker-compose.yml run --rm test
+#   docker compose -f builds/docker/docker-compose.yml run --rm apify-sim
+
+services:
+  # Development shell — interactive bash with source mounted
+  dev:
+    build:
+      context: ../..
+      dockerfile: builds/docker/Dockerfile
+    volumes:
+      - ../../src:/home/app/src:ro
+      - ../../tests:/home/app/tests:ro
+      - ./data:/home/app/data
+      - ./output:/home/app/output
+    env_file:
+      - ../../.env.local
+    environment:
+      - ENVIRONMENT=development
+      - LOG_LEVEL=DEBUG
+      - APIFY_IS_AT_HOME=false
+      - INPUT_FILE=/home/app/data/input.json
+      - OUTPUT_DIR=/home/app/output
+    stdin_open: true
+    tty: true
+    entrypoint: ["/bin/bash"]
+    command: []
+
+  # One-shot transformation
+  run:
+    build:
+      context: ../..
+      dockerfile: builds/docker/Dockerfile
+    volumes:
+      - ./data:/home/app/data
+      - ./output:/home/app/output
+    env_file:
+      - ../../.env.local
+    environment:
+      - ENVIRONMENT=development
+      - APIFY_IS_AT_HOME=false
+      - INPUT_FILE=/home/app/data/input.json
+      - OUTPUT_DIR=/home/app/output
+    entrypoint: ["polars-runner"]
+
+  # Test runner
+  test:
+    build:
+      context: ../..
+      dockerfile: builds/docker/Dockerfile
+    volumes:
+      - ../../tests:/home/app/tests:ro
+    env_file:
+      - ../../.env.test
+    environment:
+      - ENVIRONMENT=test
+      - APIFY_IS_AT_HOME=false
+    entrypoint: ["pytest"]
+    command: ["-v", "--cov=polars_runner", "--cov-report=term-missing", "tests/"]
+
+  # Simulate Apify environment locally (uses .actor/Dockerfile)
+  apify-sim:
+    build:
+      context: ../..
+      dockerfile: .actor/Dockerfile
+    volumes:
+      - ./data:/home/myuser/data
+      - ./output:/home/myuser/storage/key_value_stores/default
+    env_file:
+      - ../../.env.local
+    environment:
+      - APIFY_IS_AT_HOME=true
+      - APIFY_LOCAL_STORAGE_DIR=/home/myuser/storage
+      - APIFY_DEFAULT_KEY_VALUE_STORE_ID=default
+      - APIFY_DEFAULT_DATASET_ID=default
+      - INPUT_FILE=/home/myuser/data/input.json
+
+volumes:
+  data:
+  output:

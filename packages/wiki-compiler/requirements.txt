@@ -1,0 +1,23 @@
+# wiki-compiler — Runtime dependencies (also declared in pyproject.toml)
+
+# Apify SDK
+apify>=2.0.0
+
+# HTTP + parsing
+httpx>=0.27.0
+python-frontmatter>=1.1.0
+
+# Embeddings (E5 multilingual via sentence-transformers).
+# torch is installed CPU-only in a separate Dockerfile step (saves ~5GB CUDA toolkit).
+sentence-transformers>=3.0.0
+numpy>=1.26.0
+
+# Crossref graph (kept lightweight — networkx only if/when stats refresh lands)
+# networkx>=3.2.0
+
+# LLM providers (BYOK)
+google-genai>=1.0.0
+anthropic>=0.39.0
+
+# Vector DB for cross-tenant RAG dedup (optional, activated by PINECONE_API_KEY)
+pinecone>=5.0.0

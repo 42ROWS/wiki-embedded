@@ -1,0 +1,33 @@
+# Build context hygiene — keep the image small and the build cache warm.
+.git
+.github
+.venv
+venv
+.idea
+.vscode
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.mypy_cache
+.ruff_cache
+.coverage
+htmlcov
+.DS_Store
+
+# Repo artifacts that should never end up inside the image
+tests/
+docs/
+examples/
+benchmarks/
+.github/workflows/
+output/
+*.log
+*.tmp
+*.swp
+
+# Local secrets (paranoia)
+.env
+.env.*
+*.pem
