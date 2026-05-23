@@ -116,7 +116,8 @@ wiki-embedded-mcp --wiki ./my-wiki   # E5 model downloaded on first run
 docker pull ghcr.io/42rows/wiki-embedded-mcp:latest
 
 # Full self-contained (bundles sentence-transformers + torch)
-docker pull ghcr.io/42rows/wiki-embedded-mcp:latest-full
+docker build -t wiki-embedded-mcp .
+docker build --build-arg EXTRA=all -t wiki-embedded-mcp:full .
 ```
 
 ---
